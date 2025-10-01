@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infografía: Algoritmos de Perceptrón</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --background-color: #f8f9fa;
-            --card-color: #ffffff;
-            --text-color: #333333;
-            --border-radius: 10px;
-            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --python-color: #3776AB;
+            --csharp-color: #68217A;
+            --java-color: #ED8B00;
+            --cpp-color: #00599C;
+            --javascript-color: #F7DF1E;
+            --card-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
         }
         
         * {
@@ -24,69 +24,80 @@
         }
         
         body {
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
             line-height: 1.6;
             padding: 20px;
+            min-height: 100vh;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 30px;
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
             color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
         
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .intro {
             text-align: center;
             margin-bottom: 40px;
             font-size: 1.1rem;
-            max-width: 800px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
         }
         
-        .grid {
+        .algorithms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
             margin-bottom: 40px;
         }
         
-        .card {
-            background-color: var(--card-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+        .algorithm-card {
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         
-        .card:hover {
-            transform: translateY(-5px);
+        .algorithm-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
         }
         
         .card-header {
-            padding: 15px 20px;
+            padding: 20px;
             color: white;
-            font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -94,21 +105,25 @@
         
         .card-body {
             padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
         
         .card-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
         }
         
         .card-description {
             margin-bottom: 15px;
             font-size: 0.95rem;
+            flex-grow: 1;
         }
         
         .card-features {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .card-features ul {
@@ -117,67 +132,115 @@
         }
         
         .card-features li {
-            margin-bottom: 5px;
-            padding-left: 20px;
+            margin-bottom: 8px;
+            padding-left: 25px;
             position: relative;
         }
         
         .card-features li:before {
-            content: "✓";
+            content: "▶";
             position: absolute;
             left: 0;
-            color: var(--secondary-color);
+            color: #3498db;
             font-weight: bold;
-        }
-        
-        .code-preview {
-            background-color: #f5f5f5;
-            border-radius: 5px;
-            padding: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            margin-top: 10px;
-            border-left: 3px solid var(--secondary-color);
         }
         
         .language-tag {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
         }
         
         .function-tag {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .visualization {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
         }
         
         footer {
             text-align: center;
             margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid #ddd;
-            color: #666;
+            padding: 25px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .card-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
         
         /* Colores específicos para cada tarjeta */
-        .card:nth-child(1) .card-header { background-color: #3498db; }
-        .card:nth-child(2) .card-header { background-color: #e74c3c; }
-        .card:nth-child(3) .card-header { background-color: #2ecc71; }
-        .card:nth-child(4) .card-header { background-color: #f39c12; }
-        .card:nth-child(5) .card-header { background-color: #9b59b6; }
-        .card:nth-child(6) .card-header { background-color: #1abc9c; }
+        .python-card .card-header { background: var(--python-color); }
+        .csharp-card .card-header { background: var(--csharp-color); }
+        .java-card .card-header { background: var(--java-color); }
+        .cpp-card .card-header { background: var(--cpp-color); }
+        .javascript-card .card-header { background: var(--javascript-color); color: #333; }
         
         @media (max-width: 768px) {
-            .grid {
+            .algorithms-grid {
                 grid-template-columns: 1fr;
             }
             
             h1 {
                 font-size: 2rem;
+            }
+            
+            .visualization {
+                height: 200px;
             }
         }
     </style>
@@ -186,157 +249,166 @@
     <div class="container">
         <header>
             <h1>Algoritmos de Perceptrón</h1>
-            <p class="subtitle">Una comparativa de implementaciones con diferentes funciones de activación</p>
+            <p class="subtitle">Una comparativa visual de implementaciones con diferentes funciones de activación</p>
         </header>
         
         <section class="intro">
-            <p>Los perceptrones son las unidades fundamentales de las redes neuronales. Esta infografía presenta seis implementaciones diferentes que utilizan distintas funciones de activación para resolver problemas de clasificación.</p>
+            <p>Los perceptrones son las unidades fundamentales de las redes neuronales. Esta infografía presenta seis implementaciones diferentes que utilizan distintas funciones de activación para resolver problemas de clasificación. Cada tarjeta incluye una visualización de la función de activación y su aplicación.</p>
         </section>
         
-        <div class="grid">
+        <div class="algorithms-grid">
             <!-- Python - Lineal - AND Lógico -->
-            <div class="card">
+            <div class="algorithm-card python-card">
                 <div class="card-header">
                     <span>Python - Lineal</span>
-                    <span class="language-tag">Python</span>
+                    <div>
+                        <span class="language-tag">Python</span>
+                        <span class="function-tag">Lineal</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">AND Lógico</h3>
-                    <p class="card-description">Implementación de un perceptrón con función de activación lineal para resolver la operación lógica AND.</p>
+                    <p class="card-description">Implementación de un perceptrón con función de activación lineal para resolver la operación lógica AND. La función lineal (f(z) = z) es la más simple y se usa como base para problemas de regresión.</p>
                     
                     <div class="card-features">
                         <ul>
                             <li>Función de activación: f(z) = z</li>
-                            <li>Problema: Clasificación binaria</li>
+                            <li>Problema: Clasificación binaria linealmente separable</li>
                             <li>Dataset: Tabla de verdad AND</li>
-                            <li>Visualización de frontera de decisión</li>
+                            <li>Visualización de frontera de decisión lineal</li>
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-# Función de activación lineal
-def funcion_activacion(self, z):
-    return z
-
-# Suma ponderada
-def suma_ponderada(self, x):
-    return np.dot(x, self.pesos) + self.sesgo
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="linearChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
             
             <!-- C# - Escalón - OR Lógico -->
-            <div class="card">
+            <div class="algorithm-card csharp-card">
                 <div class="card-header">
                     <span>C# - Escalón</span>
-                    <span class="language-tag">C#</span>
+                    <div>
+                        <span class="language-tag">C#</span>
+                        <span class="function-tag">Escalón</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">OR Lógico</h3>
-                    <p class="card-description">Perceptrón implementado en C# con función escalón para la operación lógica OR.</p>
+                    <p class="card-description">Perceptrón implementado en C# con función escalón para la operación lógica OR. La función escalón produce salidas binarias (0 o 1) basadas en un umbral.</p>
                     
                     <div class="card-features">
                         <ul>
-                            <li>Función de activación: Escalón</li>
+                            <li>Función de activación: Escalón (0 si z<0, 1 si z≥0)</li>
                             <li>Problema: Clasificación binaria</li>
                             <li>Dataset: Tabla de verdad OR</li>
                             <li>Visualización de la función escalón</li>
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-// Función de activación escalón
-private int FuncionActivacion(double x) {
-    return x >= 0 ? 1 : 0;
-}
-
-// Calcular la salida del perceptrón
-public int Predecir(double[] entradas) {
-    double suma = bias;
-    for (int i = 0; i < entradas.Length; i++) {
-        suma += entradas[i] * pesos[i];
-    }
-    return FuncionActivacion(suma);
-}
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="stepChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
             
             <!-- Java - Sigmoidal - Clasificación de Spam -->
-            <div class="card">
+            <div class="algorithm-card java-card">
                 <div class="card-header">
                     <span>Java - Sigmoidal</span>
-                    <span class="language-tag">Java</span>
+                    <div>
+                        <span class="language-tag">Java</span>
+                        <span class="function-tag">Sigmoide</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">Detección de Spam</h3>
-                    <p class="card-description">Perceptrón con función sigmoidal para clasificar correos electrónicos como spam o no spam.</p>
+                    <p class="card-description">Perceptrón con función sigmoidal para clasificar correos electrónicos como spam o no spam. La función sigmoide produce salidas suaves entre 0 y 1, interpretables como probabilidades.</p>
                     
                     <div class="card-features">
                         <ul>
-                            <li>Función de activación: Sigmoide</li>
+                            <li>Función de activación: Sigmoide f(z) = 1/(1+e^(-z))</li>
                             <li>Problema: Clasificación de texto</li>
-                            <li>Dataset: Características de correos</li>
+                            <li>Dataset: Características de correos electrónicos</li>
                             <li>Salida probabilística entre 0 y 1</li>
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-// Función sigmoidal
-public double sigmoid(double x) {
-    return 1 / (1 + Math.exp(-x));
-}
-
-// Derivada de la sigmoidal
-public double sigmoidDerivative(double x) {
-    return sigmoid(x) * (1 - sigmoid(x));
-}
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="sigmoidChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
             
             <!-- C++ - ReLU - Predicción del Clima -->
-            <div class="card">
+            <div class="algorithm-card cpp-card">
                 <div class="card-header">
                     <span>C++ - ReLU</span>
-                    <span class="language-tag">C++</span>
+                    <div>
+                        <span class="language-tag">C++</span>
+                        <span class="function-tag">ReLU</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">Predicción del Clima</h3>
-                    <p class="card-description">Implementación en C++ con función ReLU para predecir condiciones climáticas.</p>
+                    <p class="card-description">Implementación en C++ con función ReLU para predecir condiciones climáticas. ReLU es no lineal pero simple computacionalmente, evitando el problema del gradiente vanishing.</p>
                     
                     <div class="card-features">
                         <ul>
-                            <li>Función de activación: ReLU</li>
+                            <li>Función de activación: ReLU f(z) = max(0, z)</li>
                             <li>Problema: Predicción meteorológica</li>
                             <li>Dataset: Datos climáticos de Seattle</li>
                             <li>Manejo de datos numéricos continuos</li>
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-// Función de activación ReLU
-double relu(double x) {
-    return (x > 0) ? x : 0;
-}
-
-// Derivada de ReLU
-double relu_deriv(double x) {
-    return (x > 0) ? 1 : 0;
-}
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="reluChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
             
             <!-- Python - Softmax - Detección de Fraudes -->
-            <div class="card">
+            <div class="algorithm-card python-card">
                 <div class="card-header">
                     <span>Python - Softmax</span>
-                    <span class="language-tag">Python</span>
+                    <div>
+                        <span class="language-tag">Python</span>
+                        <span class="function-tag">Softmax</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">Detección de Fraudes</h3>
-                    <p class="card-description">Perceptrón multiclase con función softmax para identificar transacciones fraudulentas.</p>
+                    <p class="card-description">Perceptrón multiclase con función softmax para identificar transacciones fraudulentas. Softmax convierte salidas en distribuciones de probabilidad sobre múltiples clases.</p>
                     
                     <div class="card-features">
                         <ul>
@@ -347,59 +419,50 @@ double relu_deriv(double x) {
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-# Función de activación Softmax
-def softmax(self, z):
-    # Para evitar overflow, restamos el máximo
-    z_exp = np.exp(z - np.max(z))
-    return z_exp / np.sum(z_exp)
-
-# Predecir probabilidades
-def predecir_probabilidades(self, x):
-    z = np.dot(x, self.pesos) + self.sesgo
-    return self.softmax(z)
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="softmaxChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
             
             <!-- JavaScript - Tangente Hiperbólica - Riesgo Académico -->
-            <div class="card">
+            <div class="algorithm-card javascript-card">
                 <div class="card-header">
                     <span>JavaScript - Tanh</span>
-                    <span class="language-tag">JavaScript</span>
+                    <div>
+                        <span class="language-tag">JavaScript</span>
+                        <span class="function-tag">Tanh</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">Riesgo Académico</h3>
-                    <p class="card-description">Perceptrón con función tangente hiperbólica para clasificar alumnos con riesgo académico.</p>
+                    <p class="card-description">Perceptrón con función tangente hiperbólica para clasificar alumnos con riesgo académico. Tanh produce salidas en el rango [-1, 1], centradas en cero.</p>
                     
                     <div class="card-features">
                         <ul>
-                            <li>Función de activación: Tanh</li>
+                            <li>Función de activación: Tanh f(z) = (e^z - e^(-z))/(e^z + e^(-z))</li>
                             <li>Problema: Clasificación educativa</li>
                             <li>Dataset: Datos académicos de estudiantes</li>
                             <li>Salidas en el rango [-1, 1]</li>
                         </ul>
                     </div>
                     
-                    <div class="code-preview">
-// Función de activación Tanh
-function tanh(x) {
-    return Math.tanh(x);
-}
-
-// Derivada de Tanh
-function tanhDerivative(x) {
-    return 1 - Math.pow(tanh(x), 2);
-}
-
-// Clasificación de riesgo
-function clasificarRiesgo(caracteristicas) {
-    let suma = 0;
-    for (let i = 0; i < pesos.length; i++) {
-        suma += caracteristicas[i] * pesos[i];
-    }
-    return tanh(suma + bias);
-}
+                    <div class="visualization">
+                        <div class="chart-container">
+                            <canvas id="tanhChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card-buttons">
+                        <a href="#" class="btn btn-primary">Ver código</a>
+                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
                     </div>
                 </div>
             </div>
@@ -410,5 +473,207 @@ function clasificarRiesgo(caracteristicas) {
             <p>© 2023 - Todos los derechos reservados</p>
         </footer>
     </div>
+
+    <script>
+        // Función para generar datos para las funciones de activación
+        function generateActivationData(activationFunction, range = [-5, 5], step = 0.1) {
+            const data = [];
+            for (let x = range[0]; x <= range[1]; x += step) {
+                let y;
+                switch(activationFunction) {
+                    case 'linear':
+                        y = x;
+                        break;
+                    case 'step':
+                        y = x >= 0 ? 1 : 0;
+                        break;
+                    case 'sigmoid':
+                        y = 1 / (1 + Math.exp(-x));
+                        break;
+                    case 'relu':
+                        y = Math.max(0, x);
+                        break;
+                    case 'tanh':
+                        y = Math.tanh(x);
+                        break;
+                    default:
+                        y = x;
+                }
+                data.push({x: x, y: y});
+            }
+            return data;
+        }
+
+        // Configuración común para los gráficos
+        const commonChartConfig = {
+            type: 'line',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'z'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'f(z)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Función de Activación',
+                        font: {
+                            size: 16
+                        }
+                    }
+                }
+            }
+        };
+
+        // Colores para cada función
+        const colors = {
+            linear: 'rgba(54, 162, 235, 1)',
+            step: 'rgba(255, 99, 132, 1)',
+            sigmoid: 'rgba(75, 192, 192, 1)',
+            relu: 'rgba(255, 159, 64, 1)',
+            tanh: 'rgba(153, 102, 255, 1)',
+            softmax: 'rgba(201, 203, 207, 1)'
+        };
+
+        // Gráfico para función lineal
+        const linearCtx = document.getElementById('linearChart').getContext('2d');
+        const linearData = generateActivationData('linear');
+        new Chart(linearCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'Lineal',
+                    data: linearData,
+                    borderColor: colors.linear,
+                    backgroundColor: colors.linear + '20',
+                    borderWidth: 3,
+                    tension: 0
+                }]
+            }
+        });
+
+        // Gráfico para función escalón
+        const stepCtx = document.getElementById('stepChart').getContext('2d');
+        const stepData = generateActivationData('step');
+        new Chart(stepCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'Escalón',
+                    data: stepData,
+                    borderColor: colors.step,
+                    backgroundColor: colors.step + '20',
+                    borderWidth: 3,
+                    tension: 0,
+                    stepped: true
+                }]
+            }
+        });
+
+        // Gráfico para función sigmoide
+        const sigmoidCtx = document.getElementById('sigmoidChart').getContext('2d');
+        const sigmoidData = generateActivationData('sigmoid');
+        new Chart(sigmoidCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'Sigmoide',
+                    data: sigmoidData,
+                    borderColor: colors.sigmoid,
+                    backgroundColor: colors.sigmoid + '20',
+                    borderWidth: 3,
+                    tension: 0.4
+                }]
+            }
+        });
+
+        // Gráfico para función ReLU
+        const reluCtx = document.getElementById('reluChart').getContext('2d');
+        const reluData = generateActivationData('relu');
+        new Chart(reluCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'ReLU',
+                    data: reluData,
+                    borderColor: colors.relu,
+                    backgroundColor: colors.relu + '20',
+                    borderWidth: 3,
+                    tension: 0
+                }]
+            }
+        });
+
+        // Gráfico para función Tanh
+        const tanhCtx = document.getElementById('tanhChart').getContext('2d');
+        const tanhData = generateActivationData('tanh');
+        new Chart(tanhCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'Tanh',
+                    data: tanhData,
+                    borderColor: colors.tanh,
+                    backgroundColor: colors.tanh + '20',
+                    borderWidth: 3,
+                    tension: 0.4
+                }]
+            }
+        });
+
+        // Gráfico para función Softmax (simplificado para visualización)
+        const softmaxCtx = document.getElementById('softmaxChart').getContext('2d');
+        
+        // Para softmax, mostramos una visualización de distribución de probabilidades
+        const softmaxData = [];
+        for (let x = -2; x <= 2; x += 0.1) {
+            // Simulamos una distribución de probabilidad para dos clases
+            const exp1 = Math.exp(x);
+            const exp2 = Math.exp(-x);
+            const sum = exp1 + exp2;
+            softmaxData.push({x: x, y: exp1/sum});
+        }
+        
+        new Chart(softmaxCtx, {
+            ...commonChartConfig,
+            data: {
+                datasets: [{
+                    label: 'Softmax (Clase 1)',
+                    data: softmaxData,
+                    borderColor: colors.softmax,
+                    backgroundColor: colors.softmax + '20',
+                    borderWidth: 3,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                ...commonChartConfig.options,
+                scales: {
+                    ...commonChartConfig.options.scales,
+                    y: {
+                        ...commonChartConfig.options.scales.y,
+                        min: 0,
+                        max: 1
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
