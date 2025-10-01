@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía: Algoritmos de Perceptrón</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --border-radius: 10px;
+            --box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .card-description {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .card-features {
+            margin-bottom: 15px;
+        }
+        
+        .card-features ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .card-features li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .card-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .code-preview {
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin-top: 10px;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .language-tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .function-tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+        }
+        
+        /* Colores específicos para cada tarjeta */
+        .card:nth-child(1) .card-header { background-color: #3498db; }
+        .card:nth-child(2) .card-header { background-color: #e74c3c; }
+        .card:nth-child(3) .card-header { background-color: #2ecc71; }
+        .card:nth-child(4) .card-header { background-color: #f39c12; }
+        .card:nth-child(5) .card-header { background-color: #9b59b6; }
+        .card:nth-child(6) .card-header { background-color: #1abc9c; }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Algoritmos de Perceptrón</h1>
+            <p class="subtitle">Una comparativa de implementaciones con diferentes funciones de activación</p>
+        </header>
+        
+        <section class="intro">
+            <p>Los perceptrones son las unidades fundamentales de las redes neuronales. Esta infografía presenta seis implementaciones diferentes que utilizan distintas funciones de activación para resolver problemas de clasificación.</p>
+        </section>
+        
+        <div class="grid">
+            <!-- Python - Lineal - AND Lógico -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Python - Lineal</span>
+                    <span class="language-tag">Python</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">AND Lógico</h3>
+                    <p class="card-description">Implementación de un perceptrón con función de activación lineal para resolver la operación lógica AND.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: f(z) = z</li>
+                            <li>Problema: Clasificación binaria</li>
+                            <li>Dataset: Tabla de verdad AND</li>
+                            <li>Visualización de frontera de decisión</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+# Función de activación lineal
+def funcion_activacion(self, z):
+    return z
+
+# Suma ponderada
+def suma_ponderada(self, x):
+    return np.dot(x, self.pesos) + self.sesgo
+                    </div>
+                </div>
+            </div>
+            
+            <!-- C# - Escalón - OR Lógico -->
+            <div class="card">
+                <div class="card-header">
+                    <span>C# - Escalón</span>
+                    <span class="language-tag">C#</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">OR Lógico</h3>
+                    <p class="card-description">Perceptrón implementado en C# con función escalón para la operación lógica OR.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: Escalón</li>
+                            <li>Problema: Clasificación binaria</li>
+                            <li>Dataset: Tabla de verdad OR</li>
+                            <li>Visualización de la función escalón</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+// Función de activación escalón
+private int FuncionActivacion(double x) {
+    return x >= 0 ? 1 : 0;
+}
+
+// Calcular la salida del perceptrón
+public int Predecir(double[] entradas) {
+    double suma = bias;
+    for (int i = 0; i < entradas.Length; i++) {
+        suma += entradas[i] * pesos[i];
+    }
+    return FuncionActivacion(suma);
+}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Java - Sigmoidal - Clasificación de Spam -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Java - Sigmoidal</span>
+                    <span class="language-tag">Java</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Detección de Spam</h3>
+                    <p class="card-description">Perceptrón con función sigmoidal para clasificar correos electrónicos como spam o no spam.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: Sigmoide</li>
+                            <li>Problema: Clasificación de texto</li>
+                            <li>Dataset: Características de correos</li>
+                            <li>Salida probabilística entre 0 y 1</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+// Función sigmoidal
+public double sigmoid(double x) {
+    return 1 / (1 + Math.exp(-x));
+}
+
+// Derivada de la sigmoidal
+public double sigmoidDerivative(double x) {
+    return sigmoid(x) * (1 - sigmoid(x));
+}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- C++ - ReLU - Predicción del Clima -->
+            <div class="card">
+                <div class="card-header">
+                    <span>C++ - ReLU</span>
+                    <span class="language-tag">C++</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Predicción del Clima</h3>
+                    <p class="card-description">Implementación en C++ con función ReLU para predecir condiciones climáticas.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: ReLU</li>
+                            <li>Problema: Predicción meteorológica</li>
+                            <li>Dataset: Datos climáticos de Seattle</li>
+                            <li>Manejo de datos numéricos continuos</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+// Función de activación ReLU
+double relu(double x) {
+    return (x > 0) ? x : 0;
+}
+
+// Derivada de ReLU
+double relu_deriv(double x) {
+    return (x > 0) ? 1 : 0;
+}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Python - Softmax - Detección de Fraudes -->
+            <div class="card">
+                <div class="card-header">
+                    <span>Python - Softmax</span>
+                    <span class="language-tag">Python</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Detección de Fraudes</h3>
+                    <p class="card-description">Perceptrón multiclase con función softmax para identificar transacciones fraudulentas.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: Softmax</li>
+                            <li>Problema: Detección de anomalías</li>
+                            <li>Dataset: Transacciones financieras</li>
+                            <li>Salidas como distribuciones de probabilidad</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+# Función de activación Softmax
+def softmax(self, z):
+    # Para evitar overflow, restamos el máximo
+    z_exp = np.exp(z - np.max(z))
+    return z_exp / np.sum(z_exp)
+
+# Predecir probabilidades
+def predecir_probabilidades(self, x):
+    z = np.dot(x, self.pesos) + self.sesgo
+    return self.softmax(z)
+                    </div>
+                </div>
+            </div>
+            
+            <!-- JavaScript - Tangente Hiperbólica - Riesgo Académico -->
+            <div class="card">
+                <div class="card-header">
+                    <span>JavaScript - Tanh</span>
+                    <span class="language-tag">JavaScript</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">Riesgo Académico</h3>
+                    <p class="card-description">Perceptrón con función tangente hiperbólica para clasificar alumnos con riesgo académico.</p>
+                    
+                    <div class="card-features">
+                        <ul>
+                            <li>Función de activación: Tanh</li>
+                            <li>Problema: Clasificación educativa</li>
+                            <li>Dataset: Datos académicos de estudiantes</li>
+                            <li>Salidas en el rango [-1, 1]</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="code-preview">
+// Función de activación Tanh
+function tanh(x) {
+    return Math.tanh(x);
+}
+
+// Derivada de Tanh
+function tanhDerivative(x) {
+    return 1 - Math.pow(tanh(x), 2);
+}
+
+// Clasificación de riesgo
+function clasificarRiesgo(caracteristicas) {
+    let suma = 0;
+    for (let i = 0; i < pesos.length; i++) {
+        suma += caracteristicas[i] * pesos[i];
+    }
+    return tanh(suma + bias);
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Infografía creada para comparar implementaciones de perceptrón con diferentes funciones de activación</p>
+            <p>© 2023 - Todos los derechos reservados</p>
+        </footer>
+    </div>
+</body>
+</html>
