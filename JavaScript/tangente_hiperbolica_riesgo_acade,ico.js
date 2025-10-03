@@ -1,75 +1,67 @@
 %%writefile perceptron.js
-const fs = require("fs");
-const parse = require("csv-parse/sync");
+// ============================================
+// Perceptrón en JS con activación tanh
+// ============================================
+const fs = require('fs');
 
-// Función de activación: tangente hiperbólica
-function activation(x) {
-    return Math.tanh(x);
+// Cargar dataset
+let raw = fs.readFileSync("data.json");
+let data = JSON.parse(raw);
+let X = data.X;
+let y = data.y;
+
+// Normalizar etiquetas a -1 y 1 (para tanh)
+y = y.map(v => v === 0 ? -1 : 1);
+
+// Hiperparámetros
+const lr = 0.001;
+const epochs = 20;
+
+// Inicialización de pesos
+let weights = new Array(X[0].length).fill(0).map(() => Math.random() - 0.5);
+let bias = Math.random() - 0.5;
+
+// Función de activación tanh
+function activation(z) {
+  return Math.tanh(z);
 }
 
-// Derivada de tanh
-function activationDerivative(x) {
-    return 1 - Math.pow(Math.tanh(x), 2);
+// Guardar errores por época
+let errors = [];
+
+// Entrenamiento
+for (let epoch = 1; epoch <= epochs; epoch++) {
+  let totalError = 0;
+  for (let i = 0; i < X.length; i++) {
+    let z = X[i].reduce((acc, val, j) => acc + val * weights[j], bias);
+    let output = activation(z);
+    let error = y[i] - output;
+
+    // Actualización de pesos
+    for (let j = 0; j < weights.length; j++) {
+      weights[j] += lr * error * X[i][j];
+    }
+    bias += lr * error;
+    totalError += Math.abs(error);
+  }
+  errors.push(totalError);
+  console.log(Epoch ${epoch}, Error: ${totalError.toFixed(4)});
 }
 
-// Clase Perceptrón
-class Perceptron {
-    constructor(inputSize, learningRate = 0.1) {
-        this.weights = Array(inputSize).fill(0).map(() => Math.random() - 0.5);
-        this.bias = Math.random() - 0.5;
-        this.learningRate = learningRate;
-    }
-
-    predict(inputs) {
-        const sum = this.weights.reduce((acc, w, i) => acc + w * inputs[i], this.bias);
-        return activation(sum);
-    }
-
-    train(trainingData, epochs = 50) {
-        let errors = [];
-        for (let epoch = 0; epoch < epochs; epoch++) {
-            let totalError = 0;
-            trainingData.forEach(([inputs, target]) => {
-                const output = this.predict(inputs);
-                const error = target - output;
-                totalError += error ** 2;
-
-                // Actualización de pesos
-                const gradient = error * activationDerivative(output);
-                this.weights = this.weights.map((w, i) => w + this.learningRate * gradient * inputs[i]);
-                this.bias += this.learningRate * gradient;
-            });
-            errors.push(totalError);
-            console.log(Epoch ${epoch+1}, Error: ${totalError.toFixed(4)});
-        }
-        return errors;
-    }
+// Predicciones finales
+let predictions = [];
+for (let i = 0; i < X.length; i++) {
+  let z = X[i].reduce((acc, val, j) => acc + val * weights[j], bias);
+  let pred = activation(z);
+  predictions.push({input: X[i], real: y[i], pred: pred});
 }
 
-// --- CARGA DEL CSV ---
-const file = fs.readFileSync("dataset.csv", "utf8");
-const records = parse.parse(file, {columns: false, skip_empty_lines: true});
+// Guardar resultados en JSON
+fs.writeFileSync("results.json", JSON.stringify({
+  errors: errors,
+  predictions: predictions,
+  weights: weights,
+  bias: bias
+}, null, 2));
 
-// Suponiendo que la última columna es la salida
-const data = records.map(row => {
-    const inputs = row.slice(0, row.length-1).map(Number);
-    const target = Number(row[row.length-1]);
-    return [inputs, target];
-});
-
-// Inicializar perceptrón
-const inputSize = data[0][0].length;
-const perceptron = new Perceptron(inputSize, 0.1);
-
-// Entrenar
-const errors = perceptron.train(data, 50);
-
-// Guardar errores en CSV
-fs.writeFileSync("errors.csv", errors.map((e,i) => ${i+1},${e}).join("\n"));
-
-// Guardar función de activación
-let xs = Array.from({length: 100}, (_, i) => -5 + i*0.1);
-let ys = xs.map(activation);
-fs.writeFileSync("activation.csv", xs.map((x,i) => ${x},${ys[i]}).join("\n"));
-
-console.log("Resultados guardados en errors.csv y activation.csv");
+console.log("\n✅ Resultados guardados en results.json");
