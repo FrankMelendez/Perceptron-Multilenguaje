@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Infografía: Algoritmos de Perceptrón</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
     <style>
         :root {
             --python-color: #3776AB;
@@ -223,6 +225,83 @@
             transform: translateY(-2px);
         }
         
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close-modal:hover {
+            color: #000;
+        }
+        
+        .code-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .demo-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .demo-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .demo-input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .demo-result {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
         /* Colores específicos para cada tarjeta */
         .python-card .card-header { background: var(--python-color); }
         .csharp-card .card-header { background: var(--csharp-color); }
@@ -241,6 +320,10 @@
             
             .visualization {
                 height: 200px;
+            }
+            
+            .demo-inputs {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -286,8 +369,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('python-linear')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('python-linear')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -321,8 +404,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('csharp-step')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('csharp-step')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -356,8 +439,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('java-sigmoid')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('java-sigmoid')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -391,8 +474,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('cpp-relu')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('cpp-relu')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -426,8 +509,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('python-softmax')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('python-softmax')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -461,8 +544,8 @@
                     </div>
                     
                     <div class="card-buttons">
-                        <a href="#" class="btn btn-primary">Ver código</a>
-                        <a href="#" class="btn btn-secondary">Ejecutar demo</a>
+                        <button class="btn btn-primary" onclick="showCode('javascript-tanh')">Ver código</button>
+                        <button class="btn btn-secondary" onclick="showDemo('javascript-tanh')">Ejecutar demo</button>
                     </div>
                 </div>
             </div>
@@ -472,6 +555,14 @@
             <p>Infografía creada para comparar implementaciones de perceptrón con diferentes funciones de activación</p>
             <p>© 2023 - Todos los derechos reservados</p>
         </footer>
+    </div>
+
+    <!-- Modal para mostrar código y demos -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
     </div>
 
     <script>
@@ -674,6 +765,540 @@
                 }
             }
         });
+
+        // Funciones para manejar el modal
+        function showCode(algorithm) {
+            const modal = document.getElementById('codeModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            let code = '';
+            let title = '';
+            
+            switch(algorithm) {
+                case 'python-linear':
+                    title = 'Python - Perceptrón Lineal (AND Lógico)';
+                    code = `class Perceptron:
+    def __init__(self, tasa_aprendizaje=0.1, iteraciones=50):
+        self.tasa_aprendizaje = tasa_aprendizaje
+        self.iteraciones = iteraciones
+        self.pesos = None
+        self.sesgo = None
+
+    def funcion_activacion(self, z):
+        return z
+
+    def predecir(self, x):
+        z = np.dot(x, self.pesos) + self.sesgo
+        salida = self.funcion_activacion(z)
+        return 1 if salida >= 0 else 0
+
+    def entrenar(self, X, y):
+        n_muestras, n_caracteristicas = X.shape
+        self.pesos = np.random.randn(n_caracteristicas) * 0.01
+        self.sesgo = 0.0
+
+        for epoca in range(self.iteraciones):
+            for i in range(n_muestras):
+                z = np.dot(X[i], self.pesos) + self.sesgo
+                salida = self.funcion_activacion(z)
+                error = y[i] - salida
+                self.pesos += self.tasa_aprendizaje * error * X[i]
+                self.sesgo += self.tasa_aprendizaje * error`;
+                    break;
+                    
+                case 'csharp-step':
+                    title = 'C# - Perceptrón Escalón (OR Lógico)';
+                    code = `public class PerceptronEscalon
+{
+    private double[] pesos;
+    private double bias;
+
+    public PerceptronEscalon(int numEntradas, double tasaAprendizaje = 0.1)
+    {
+        this.pesos = new double[numEntradas];
+        this.bias = 0;
+        
+        Random rnd = new Random();
+        for (int i = 0; i < numEntradas; i++)
+        {
+            pesos[i] = rnd.NextDouble() * 0.2 - 0.1;
+        }
+    }
+
+    private int FuncionActivacion(double x)
+    {
+        return x >= 0 ? 1 : 0;
+    }
+
+    public int Predecir(double[] entradas)
+    {
+        double suma = bias;
+        for (int i = 0; i < entradas.Length; i++)
+        {
+            suma += entradas[i] * pesos[i];
+        }
+        return FuncionActivacion(suma);
+    }
+
+    public void Entrenar(List<double[]> datos, List<int> etiquetas)
+    {
+        for (int iteracion = 0; iteracion < maxIteraciones; iteracion++)
+        {
+            for (int i = 0; i < datos.Count; i++)
+            {
+                int prediccion = Predecir(datos[i]);
+                int error = etiquetas[i] - prediccion;
+
+                if (error != 0)
+                {
+                    for (int j = 0; j < pesos.Length; j++)
+                    {
+                        pesos[j] += tasaAprendizaje * error * datos[i][j];
+                    }
+                    bias += tasaAprendizaje * error;
+                }
+            }
+        }
+    }
+}`;
+                    break;
+                    
+                case 'java-sigmoid':
+                    title = 'Java - Perceptrón Sigmoide (Detección de Spam)';
+                    code = `public class PerceptronSigmoid {
+    private double[] weights;
+    private double bias;
+    private double learningRate;
+
+    public double sigmoid(double x) {
+        return 1 / (1 + Math.exp(-x));
+    }
+
+    public double sigmoidDerivative(double x) {
+        double sig = sigmoid(x);
+        return sig * (1 - sig);
+    }
+
+    public double predict(double[] inputs) {
+        double sum = bias;
+        for (int i = 0; i < inputs.length; i++) {
+            sum += inputs[i] * weights[i];
+        }
+        return sigmoid(sum);
+    }
+
+    public void train(double[][] trainingData, double[] targets, int epochs) {
+        for (int epoch = 0; epoch < epochs; epoch++) {
+            for (int i = 0; i < trainingData.length; i++) {
+                double output = predict(trainingData[i]);
+                double error = targets[i] - output;
+                
+                double gradient = error * sigmoidDerivative(output);
+                for (int j = 0; j < weights.length; j++) {
+                    weights[j] += learningRate * gradient * trainingData[i][j];
+                }
+                bias += learningRate * gradient;
+            }
+        }
+    }
+}`;
+                    break;
+                    
+                case 'cpp-relu':
+                    title = 'C++ - Perceptrón ReLU (Predicción del Clima)';
+                    code = `#include <vector>
+#include <cmath>
+
+double relu(double x) {
+    return (x > 0) ? x : 0;
+}
+
+double relu_deriv(double x) {
+    return (x > 0) ? 1 : 0;
+}
+
+class PerceptronReLU {
+private:
+    std::vector<double> weights;
+    double bias;
+    double learningRate;
+
+public:
+    PerceptronReLU(int inputSize, double lr = 0.001) : learningRate(lr) {
+        // Inicializar pesos aleatoriamente
+        for (int i = 0; i < inputSize; i++) {
+            weights.push_back(((double)rand() / RAND_MAX) - 0.5);
+        }
+        bias = 0.0;
+    }
+
+    double predict(std::vector<double> inputs) {
+        double z = bias;
+        for (int i = 0; i < inputs.size(); i++) {
+            z += inputs[i] * weights[i];
+        }
+        return relu(z);
+    }
+
+    void train(std::vector<std::vector<double>> X, std::vector<int> y, int epochs) {
+        for (int e = 0; e < epochs; e++) {
+            for (int i = 0; i < X.size(); i++) {
+                double z = bias;
+                for (int j = 0; j < X[i].size(); j++) {
+                    z += X[i][j] * weights[j];
+                }
+                double pred = relu(z);
+                double error = y[i] - pred;
+                
+                double grad = error * relu_deriv(z);
+                for (int j = 0; j < weights.size(); j++) {
+                    weights[j] += learningRate * grad * X[i][j];
+                }
+                bias += learningRate * grad;
+            }
+        }
+    }
+};`;
+                    break;
+                    
+                case 'python-softmax':
+                    title = 'Python - Perceptrón Softmax (Detección de Fraudes)';
+                    code = `class PerceptronSoftmax:
+    def __init__(self, tasa_aprendizaje=0.01, iteraciones=100):
+        self.tasa_aprendizaje = tasa_aprendizaje
+        self.iteraciones = iteraciones
+        self.pesos = None
+        self.sesgo = None
+
+    def softmax(self, z):
+        z_exp = np.exp(z - np.max(z))
+        return z_exp / np.sum(z_exp)
+
+    def predecir_probabilidades(self, x):
+        z = np.dot(x, self.pesos) + self.sesgo
+        return self.softmax(z)
+
+    def predecir(self, x):
+        probabilidades = self.predecir_probabilidades(x)
+        return np.argmax(probabilidades)
+
+    def entrenar(self, X, y):
+        n_muestras, n_caracteristicas = X.shape
+        self.pesos = np.random.randn(n_caracteristicas, 2) * 0.01
+        self.sesgo = np.zeros(2)
+
+        for epoca in range(self.iteraciones):
+            for i in range(n_muestras):
+                probabilidades = self.predecir_probabilidades(X[i])
+                
+                y_one_hot = np.zeros(2)
+                y_one_hot[y[i]] = 1
+                
+                gradiente = probabilidades - y_one_hot
+                self.pesos -= self.tasa_aprendizaje * np.outer(X[i], gradiente)
+                self.sesgo -= self.tasa_aprendizaje * gradiente`;
+                    break;
+                    
+                case 'javascript-tanh':
+                    title = 'JavaScript - Perceptrón Tanh (Riesgo Académico)';
+                    code = `class PerceptronTanh {
+    constructor(inputSize, learningRate = 0.1) {
+        this.weights = Array(inputSize).fill(0).map(() => Math.random() - 0.5);
+        this.bias = Math.random() - 0.5;
+        this.learningRate = learningRate;
+    }
+
+    activation(x) {
+        return Math.tanh(x);
+    }
+
+    activationDerivative(x) {
+        return 1 - Math.pow(Math.tanh(x), 2);
+    }
+
+    predict(inputs) {
+        const sum = this.weights.reduce((acc, w, i) => acc + w * inputs[i], this.bias);
+        return this.activation(sum);
+    }
+
+    train(trainingData, epochs = 50) {
+        for (let epoch = 0; epoch < epochs; epoch++) {
+            trainingData.forEach(([inputs, target]) => {
+                const output = this.predict(inputs);
+                const error = target - output;
+
+                const gradient = error * this.activationDerivative(output);
+                this.weights = this.weights.map((w, i) => 
+                    w + this.learningRate * gradient * inputs[i]
+                );
+                this.bias += this.learningRate * gradient;
+            });
+        }
+    }
+}`;
+                    break;
+            }
+            
+            modalContent.innerHTML = `
+                <h2>${title}</h2>
+                <div class="code-container">
+                    <pre><code class="language-python">${code}</code></pre>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            hljs.highlightAll();
+        }
+
+        function showDemo(algorithm) {
+            const modal = document.getElementById('codeModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            let demoHTML = '';
+            let title = '';
+            
+            switch(algorithm) {
+                case 'python-linear':
+                    title = 'Demo: Python - Perceptrón Lineal (AND Lógico)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Prueba el perceptrón lineal con entradas para la operación AND:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Entrada 1:</label>
+                                    <input type="number" id="input1" class="demo-input" min="0" max="1" value="0">
+                                </div>
+                                <div>
+                                    <label>Entrada 2:</label>
+                                    <input type="number" id="input2" class="demo-input" min="0" max="1" value="0">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runLinearDemo()">Calcular</button>
+                            <div id="linearResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'csharp-step':
+                    title = 'Demo: C# - Perceptrón Escalón (OR Lógico)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Prueba el perceptrón con función escalón para la operación OR:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Entrada A:</label>
+                                    <input type="number" id="inputA" class="demo-input" min="0" max="1" value="0">
+                                </div>
+                                <div>
+                                    <label>Entrada B:</label>
+                                    <input type="number" id="inputB" class="demo-input" min="0" max="1" value="0">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runStepDemo()">Calcular OR</button>
+                            <div id="stepResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'java-sigmoid':
+                    title = 'Demo: Java - Perceptrón Sigmoide (Spam)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Simulación de detección de spam basada en características del correo:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Número de palabras clave:</label>
+                                    <input type="number" id="keywords" class="demo-input" min="0" max="20" value="5">
+                                </div>
+                                <div>
+                                    <label>Longitud del correo (caracteres):</label>
+                                    <input type="number" id="length" class="demo-input" min="0" max="5000" value="1000">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runSigmoidDemo()">Verificar Spam</button>
+                            <div id="sigmoidResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'cpp-relu':
+                    title = 'Demo: C++ - Perceptrón ReLU (Clima)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Predicción de probabilidad de lluvia basada en condiciones climáticas:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Precipitación (mm):</label>
+                                    <input type="number" id="precipitation" class="demo-input" min="0" max="50" value="5">
+                                </div>
+                                <div>
+                                    <label>Temperatura máxima (°C):</label>
+                                    <input type="number" id="tempMax" class="demo-input" min="-10" max="40" value="20">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runReluDemo()">Predecir Lluvia</button>
+                            <div id="reluResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'python-softmax':
+                    title = 'Demo: Python - Perceptrón Softmax (Fraudes)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Evaluación de probabilidad de fraude en transacciones:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Monto de transacción:</label>
+                                    <input type="number" id="amount" class="demo-input" min="0" max="10000" value="100">
+                                </div>
+                                <div>
+                                    <label>Hora del día (0-23):</label>
+                                    <input type="number" id="hour" class="demo-input" min="0" max="23" value="12">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runSoftmaxDemo()">Evaluar Fraude</button>
+                            <div id="softmaxResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'javascript-tanh':
+                    title = 'Demo: JavaScript - Perceptrón Tanh (Riesgo Académico)';
+                    demoHTML = `
+                        <h2>${title}</h2>
+                        <div class="demo-container">
+                            <p>Evaluación de riesgo académico de estudiantes:</p>
+                            <div class="demo-inputs">
+                                <div>
+                                    <label>Promedio de calificaciones (0-100):</label>
+                                    <input type="number" id="gpa" class="demo-input" min="0" max="100" value="75">
+                                </div>
+                                <div>
+                                    <label>Asistencias (%):</label>
+                                    <input type="number" id="attendance" class="demo-input" min="0" max="100" value="80">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="runTanhDemo()">Evaluar Riesgo</button>
+                            <div id="tanhResult" class="demo-result"></div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            modalContent.innerHTML = demoHTML;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('codeModal').style.display = 'none';
+        }
+
+        // Funciones de demostración
+        function runLinearDemo() {
+            const input1 = parseInt(document.getElementById('input1').value);
+            const input2 = parseInt(document.getElementById('input2').value);
+            
+            // Simulación simple de perceptrón AND
+            const result = input1 && input2 ? 1 : 0;
+            
+            document.getElementById('linearResult').innerHTML = `
+                <p><strong>Entradas:</strong> [${input1}, ${input2}]</p>
+                <p><strong>Salida AND:</strong> ${result}</p>
+                <p><strong>Interpretación:</strong> ${result ? 'VERDADERO (1)' : 'FALSO (0)'}</p>
+            `;
+        }
+
+        function runStepDemo() {
+            const inputA = parseInt(document.getElementById('inputA').value);
+            const inputB = parseInt(document.getElementById('inputB').value);
+            
+            // Simulación simple de perceptrón OR
+            const result = inputA || inputB ? 1 : 0;
+            
+            document.getElementById('stepResult').innerHTML = `
+                <p><strong>Entradas:</strong> [${inputA}, ${inputB}]</p>
+                <p><strong>Salida OR:</strong> ${result}</p>
+                <p><strong>Interpretación:</strong> ${result ? 'VERDADERO (1)' : 'FALSO (0)'}</p>
+            `;
+        }
+
+        function runSigmoidDemo() {
+            const keywords = parseInt(document.getElementById('keywords').value);
+            const length = parseInt(document.getElementById('length').value);
+            
+            // Simulación de detección de spam
+            const spamScore = (keywords / 20 * 0.7) + (length > 2000 ? 0.3 : 0);
+            const probability = 1 / (1 + Math.exp(-spamScore * 10));
+            
+            document.getElementById('sigmoidResult').innerHTML = `
+                <p><strong>Características:</strong> ${keywords} palabras clave, ${length} caracteres</p>
+                <p><strong>Probabilidad de spam:</strong> ${(probability * 100).toFixed(2)}%</p>
+                <p><strong>Clasificación:</strong> ${probability > 0.5 ? 'SPAM' : 'NO SPAM'}</p>
+            `;
+        }
+
+        function runReluDemo() {
+            const precipitation = parseInt(document.getElementById('precipitation').value);
+            const tempMax = parseInt(document.getElementById('tempMax').value);
+            
+            // Simulación de predicción de lluvia
+            const rainScore = Math.max(0, (precipitation * 0.6) + ((25 - tempMax) * 0.4));
+            const probability = Math.min(1, rainScore / 20);
+            
+            document.getElementById('reluResult').innerHTML = `
+                <p><strong>Condiciones:</strong> ${precipitation}mm precipitación, ${tempMax}°C máxima</p>
+                <p><strong>Probabilidad de lluvia:</strong> ${(probability * 100).toFixed(2)}%</p>
+                <p><strong>Predicción:</strong> ${probability > 0.5 ? 'LLUVIA ESPERADA' : 'POCO PROBABLE'}</p>
+            `;
+        }
+
+        function runSoftmaxDemo() {
+            const amount = parseInt(document.getElementById('amount').value);
+            const hour = parseInt(document.getElementById('hour').value);
+            
+            // Simulación de detección de fraude
+            const fraudScore = (amount > 1000 ? 0.6 : 0) + (hour < 6 || hour > 22 ? 0.4 : 0);
+            const legitScore = 1 - fraudScore;
+            
+            document.getElementById('softmaxResult').innerHTML = `
+                <p><strong>Transacción:</strong> $${amount}, hora: ${hour}:00</p>
+                <p><strong>Probabilidad Legítima:</strong> ${(legitScore * 100).toFixed(2)}%</p>
+                <p><strong>Probabilidad de Fraude:</strong> ${(fraudScore * 100).toFixed(2)}%</p>
+                <p><strong>Clasificación:</strong> ${fraudScore > 0.5 ? 'POSIBLE FRAUDE' : 'TRANSACCIÓN NORMAL'}</p>
+            `;
+        }
+
+        function runTanhDemo() {
+            const gpa = parseInt(document.getElementById('gpa').value);
+            const attendance = parseInt(document.getElementById('attendance').value);
+            
+            // Simulación de evaluación de riesgo académico
+            const riskScore = ((100 - gpa) * 0.6 + (100 - attendance) * 0.4) / 100;
+            const riskLevel = Math.tanh(riskScore * 4 - 2); // Escalar para mejor visualización
+            
+            document.getElementById('tanhResult').innerHTML = `
+                <p><strong>Estudiante:</strong> GPA ${gpa}%, Asistencia ${attendance}%</p>
+                <p><strong>Nivel de riesgo:</strong> ${riskLevel.toFixed(4)}</p>
+                <p><strong>Evaluación:</strong> ${
+                    riskLevel > 0.5 ? 'ALTO RIESGO' : 
+                    riskLevel > 0 ? 'RIESGO MODERADO' : 'BAJO RIESGO'
+                }</p>
+            `;
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('codeModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
